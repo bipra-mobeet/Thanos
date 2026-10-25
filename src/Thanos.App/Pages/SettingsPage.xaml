@@ -1,0 +1,70 @@
+<Page
+    x:Class="Thanos.App.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Loaded="Page_Loaded">
+    <ScrollViewer>
+        <StackPanel Padding="32,24,32,32" Spacing="18" MaxWidth="850" HorizontalAlignment="Left">
+            <StackPanel>
+                <TextBlock Text="Settings" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="Control matching, performance, deletion safety and local logs." Opacity="0.66" Margin="0,5,0,0" />
+            </StackPanel>
+
+            <Border Style="{StaticResource PanelStyle}">
+                <Grid ColumnDefinitions="*,220" ColumnSpacing="24">
+                    <StackPanel>
+                        <TextBlock Text="Appearance" FontSize="19" FontWeight="SemiBold" />
+                        <TextBlock Text="Follow Windows or choose a light or dark theme." Opacity="0.6" FontSize="12" />
+                    </StackPanel>
+                    <ComboBox x:Name="ThemeBox" Grid.Column="1" Header="Theme" SelectedIndex="0">
+                        <ComboBoxItem Content="Use Windows setting" />
+                        <ComboBoxItem Content="Light" />
+                        <ComboBoxItem Content="Dark" />
+                    </ComboBox>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource PanelStyle}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Similarity" FontSize="19" FontWeight="SemiBold" />
+                    <Grid ColumnDefinitions="*,140" ColumnSpacing="24">
+                        <StackPanel><TextBlock Text="Default similarity threshold" /><TextBlock Text="Only scores at or above this value are shown." Opacity="0.6" FontSize="12" /></StackPanel>
+                        <NumberBox x:Name="ThresholdBox" Grid.Column="1" Minimum="1" Maximum="100" SpinButtonPlacementMode="Compact" Header="Percent" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel><TextBlock Text="GPU acceleration" /><TextBlock Text="Uses DirectML when available, with automatic CPU fallback." Opacity="0.6" FontSize="12" /></StackPanel>
+                        <ToggleSwitch x:Name="GpuToggle" Grid.Column="1" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelStyle}">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="Deletion" FontSize="19" FontWeight="SemiBold" />
+                    <RadioButton x:Name="RecycleBinOption" Content="Delete to Recycle Bin (recommended)" GroupName="Deletion" />
+                    <RadioButton x:Name="PermanentOption" Content="Permanent Delete" GroupName="Deletion" Checked="PermanentOption_Checked" Unchecked="PermanentOption_Checked" />
+                    <InfoBar x:Name="PermanentWarning" IsOpen="False" IsClosable="False" Severity="Error"
+                             Title="Permanent deletion is irreversible" Message="Deleted photos cannot be restored from the Recycle Bin." />
+                    <CheckBox x:Name="ConfirmDeleteCheck" Content="Confirm before delete" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource PanelStyle}">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="Logs" FontSize="19" FontWeight="SemiBold" />
+                    <TextBlock Text="Human-readable run logs stay under your local application data folder." Opacity="0.64" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="View Logs" Click="ViewLogs_Click" />
+                        <Button Content="Open Logs Folder" Click="OpenLogs_Click" />
+                        <Button Content="Clear Old Logs" Click="ClearLogs_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <InfoBar x:Name="SavedBar" IsOpen="False" IsClosable="True" Severity="Success" Message="Settings saved." />
+                <Button Grid.Column="1" Content="Save settings" Click="Save_Click" Background="{StaticResource ThanosBlue}" Foreground="White" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

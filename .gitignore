@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.venv/
+*.user
+*.suo
+TestResults/
+__pycache__/
+*.pyc
+models/*.onnx
+*.db
+*.db-shm
+*.db-wal

@@ -1,0 +1,70 @@
+<Window
+    x:Class="Thanos.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid x:Name="RootLayout" Background="{ThemeResource WorkspaceBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="AppTitleBar" Background="{ThemeResource TitleBarBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="236" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" Margin="16,0,0,0">
+                <Border Width="30" Height="30" CornerRadius="7">
+                    <Image Source="ms-appx:///Assets/ThanosIcon.png" Stretch="UniformToFill" />
+                </Border>
+                <StackPanel VerticalAlignment="Center" Spacing="-1">
+                    <TextBlock Text="Thanos by Bipra" FontWeight="SemiBold" FontSize="15" Foreground="{ThemeResource PrimaryTextBrush}" />
+                    <TextBlock Text="Find and remove similar looking photos" FontSize="9" Foreground="{ThemeResource SecondaryTextBrush}" />
+                </StackPanel>
+            </StackPanel>
+            <Border Grid.Column="1" BorderBrush="{ThemeResource StrokeBrush}" BorderThickness="1,0,0,1" />
+        </Grid>
+
+        <NavigationView
+            x:Name="Navigation"
+            Grid.Row="1"
+            IsBackButtonVisible="Collapsed"
+            IsPaneToggleButtonVisible="False"
+            IsSettingsVisible="False"
+            IsPaneOpen="True"
+            AlwaysShowHeader="False"
+            PaneDisplayMode="Left"
+            OpenPaneLength="236"
+            CompactPaneLength="48"
+            SelectionChanged="Navigation_SelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Photo Groups" Tag="groups" Margin="8,3" CornerRadius="7">
+                    <NavigationViewItem.Icon><SymbolIcon Symbol="Pictures" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Scan Folders" Tag="folders" Margin="8,3" CornerRadius="7">
+                    <NavigationViewItem.Icon><SymbolIcon Symbol="Folder" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Similar to Selected" Tag="similar" Margin="8,3" CornerRadius="7">
+                    <NavigationViewItem.Icon><SymbolIcon Symbol="Find" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Settings" Tag="settings" Margin="8,3" CornerRadius="7">
+                    <NavigationViewItem.Icon><SymbolIcon Symbol="Setting" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <NavigationView.PaneFooter>
+                <Border BorderBrush="{ThemeResource StrokeBrush}" BorderThickness="0,1,0,0" Padding="16,17,16,18">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="LOCAL INDEX" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource SecondaryTextBrush}" />
+                        <TextBlock Text="Private on-device processing" FontSize="11" Foreground="{ThemeResource SecondaryTextBrush}" />
+                        <ProgressBar Value="100" Height="4" Foreground="{StaticResource ThanosBlue}" />
+                        <Button Content="Scan folders" HorizontalAlignment="Stretch" Style="{StaticResource OutlineButtonStyle}"
+                                Tag="folders" Click="FooterScanFolders_Click" />
+                    </StackPanel>
+                </Border>
+            </NavigationView.PaneFooter>
+            <Border Background="{ThemeResource WorkspaceBrush}" BorderBrush="{ThemeResource StrokeBrush}" BorderThickness="1,1,0,0" CornerRadius="16,0,0,0">
+                <Frame x:Name="ContentFrame" />
+            </Border>
+        </NavigationView>
+    </Grid>
+</Window>

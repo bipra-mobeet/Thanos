@@ -1,0 +1,442 @@
+<Page
+    x:Class="Thanos.App.Pages.PhotoGroupsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Thanos.App.ViewModels"
+    Background="{ThemeResource WorkspaceBrush}"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded">
+    <Grid>
+        <Grid x:Name="SessionChoicePanel" Visibility="Collapsed" Padding="40">
+            <StackPanel Width="900" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="22">
+                <Border Width="72" Height="72" CornerRadius="36" Background="{ThemeResource SoftBlueBrush}"
+                        HorizontalAlignment="Center">
+                    <FontIcon Glyph="&#xE7C3;" FontSize="31" Foreground="{StaticResource ThanosBlue}" />
+                </Border>
+                <StackPanel Spacing="7">
+                    <TextBlock Text="What would you like to do?" FontSize="34" FontWeight="Bold"
+                               HorizontalAlignment="Center" Foreground="{ThemeResource PrimaryTextBrush}" />
+                    <TextBlock x:Name="PreviousSessionSummary" TextAlignment="Center" FontSize="15"
+                               Foreground="{ThemeResource SecondaryTextBrush}" />
+                </StackPanel>
+                <Grid ColumnDefinitions="280,*" ColumnSpacing="14">
+                    <Border Style="{StaticResource PanelStyle}">
+                        <StackPanel Spacing="12">
+                            <FontIcon Glyph="&#xE710;" FontSize="28" Foreground="{StaticResource ThanosBlue}" HorizontalAlignment="Left" />
+                            <TextBlock Text="Start New Scan" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="Choose folders and begin a separate scan. Recent results stay in Scan History."
+                                       TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource SecondaryTextBrush}" />
+                            <Button Content="Start New Scan" Click="StartNewSession_Click"
+                                    Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource PanelStyle}" Padding="16">
+                        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+                            <FontIcon Glyph="&#xE8FD;" FontSize="28" Foreground="{StaticResource ThanosBlue}" HorizontalAlignment="Left" />
+                            <StackPanel Grid.Row="1" Spacing="2">
+                                <TextBlock Text="Recent Scans" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="The five most recent completed scans are kept locally."
+                                           TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource SecondaryTextBrush}" />
+                            </StackPanel>
+                            <ListView x:Name="PreviousSessionsList" Grid.Row="2" Height="270" SelectionMode="None"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Padding" Value="0" />
+                                        <Setter Property="Margin" Value="0,0,0,7" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ScanSessionViewModel">
+                                        <Border Background="{ThemeResource SubtleSurfaceBrush}" BorderBrush="{ThemeResource StrokeBrush}"
+                                                BorderThickness="1" CornerRadius="8" Padding="11,9">
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                                <StackPanel Spacing="2">
+                                                    <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold" Foreground="{ThemeResource PrimaryTextBrush}" />
+                                                    <TextBlock Text="{x:Bind Summary}" FontSize="11" Foreground="{ThemeResource SecondaryTextBrush}" />
+                                                    <TextBlock Text="{x:Bind Folders}" FontSize="10" Foreground="{ThemeResource MutedTextBrush}"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Content="Open" Click="OpenSession_Click" Tag="{x:Bind}"
+                                                        IsEnabled="{x:Bind CanOpen}" Style="{StaticResource OutlineButtonStyle}"
+                                                        VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer x:Name="WelcomePanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+            <StackPanel Width="1040" Padding="20,28,20,26" Spacing="18" MaxWidth="1160" HorizontalAlignment="Center">
+                <StackPanel Spacing="7">
+                    <TextBlock x:Name="WelcomeTitle" Text="Start Your First Scan" FontSize="42" FontWeight="Bold"
+                               Foreground="{ThemeResource PrimaryTextBrush}" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="WelcomeDescription"
+                               Text="Select one or more folders to find similar photos, remove duplicates and free up space on your device."
+                               FontSize="18" LineHeight="25" TextWrapping="Wrap" TextAlignment="Center"
+                               Foreground="{ThemeResource SecondaryTextBrush}" MaxWidth="720" HorizontalAlignment="Center" />
+                    <Button x:Name="ReturnToResultsButton" Content="View Scan History"
+                            Visibility="Collapsed" Click="ReturnToResults_Click"
+                            Style="{StaticResource OutlineButtonStyle}" HorizontalAlignment="Center" />
+                </StackPanel>
+
+                <Grid Height="320" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="290" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Width="270" Height="270" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Border Width="122" Height="88" CornerRadius="10" BorderBrush="White" BorderThickness="5"
+                                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="12,0,0,22"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><RotateTransform Angle="-10" /></Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#67B8FF" Offset="0" />
+                                    <GradientStop Color="#2356A8" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <FontIcon Glyph="&#xEB9F;" FontSize="30" Foreground="White"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Width="126" Height="94" CornerRadius="10" BorderBrush="White" BorderThickness="5"
+                                HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,12,0"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><RotateTransform Angle="9" /></Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                                    <GradientStop Color="#F5C25D" Offset="0" />
+                                    <GradientStop Color="#DE7548" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <FontIcon Glyph="&#xEB9F;" FontSize="30" Foreground="White"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Width="118" Height="84" CornerRadius="10" BorderBrush="White" BorderThickness="5"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,16"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><RotateTransform Angle="5" /></Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#C68AF7" Offset="0" />
+                                    <GradientStop Color="#4057A9" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <FontIcon Glyph="&#xEB9F;" FontSize="30" Foreground="White"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </Grid>
+
+                    <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button x:Name="StartScanButton" Width="240" Height="240" CornerRadius="120"
+                                BorderThickness="0" Foreground="White"
+                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                IsEnabled="False" Click="StartScan_Click">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#31C4F2" Offset="0" />
+                                    <GradientStop Color="#087EF5" Offset="0.48" />
+                                    <GradientStop Color="#0759E7" Offset="1" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                            <StackPanel Spacing="8">
+                                <FontIcon Glyph="&#xE721;" FontSize="56" Foreground="White" />
+                                <TextBlock Text="Start Scan" FontSize="23" FontWeight="Bold" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Column="2" Width="270" Height="270" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Border Width="122" Height="90" CornerRadius="10" BorderBrush="White" BorderThickness="5"
+                                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,10,0,0"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><RotateTransform Angle="8" /></Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FCB14D" Offset="0" />
+                                    <GradientStop Color="#D35E56" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <FontIcon Glyph="&#xEB9F;" FontSize="30" Foreground="White"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Width="116" Height="88" CornerRadius="10" BorderBrush="White" BorderThickness="5"
+                                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,14"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><RotateTransform Angle="-7" /></Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                                    <GradientStop Color="#D9B890" Offset="0" />
+                                    <GradientStop Color="#7E5A45" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <FontIcon Glyph="&#xEB9F;" FontSize="30" Foreground="White"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Width="126" Height="92" CornerRadius="10" BorderBrush="White" BorderThickness="5"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,22"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><RotateTransform Angle="11" /></Border.RenderTransform>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#50B9E8" Offset="0" />
+                                    <GradientStop Color="#2762A5" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <FontIcon Glyph="&#xEB9F;" FontSize="30" Foreground="White"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <Border Style="{StaticResource PanelStyle}" Padding="22,18">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="Select Folders to Scan" Style="{StaticResource SectionTitleStyle}" />
+                                <TextBlock Text="Choose one or more directories to search for similar photos."
+                                           Style="{StaticResource SecondaryTextStyle}" FontSize="12" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Click="AddWelcomeFolder_Click" Style="{StaticResource OutlineButtonStyle}">
+                                <StackPanel Orientation="Horizontal" Spacing="9">
+                                    <FontIcon Glyph="&#xE8B7;" FontSize="17" Foreground="{StaticResource ThanosBlue}" />
+                                    <TextBlock Text="Add Folder" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <ListView x:Name="WelcomeFolders" Grid.Row="1" Height="72" SelectionMode="None"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate><ItemsStackPanel Orientation="Horizontal" /></ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="0,0,10,0" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="300" Height="62" Background="{ThemeResource SubtleSurfaceBrush}" BorderBrush="{ThemeResource StrokeBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="14,8">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                            <FontIcon Glyph="&#xE8B7;" FontSize="28" Foreground="#F2B233" />
+                                            <TextBlock Grid.Column="1" Text="{Binding FullPath}" TextTrimming="CharacterEllipsis"
+                                                       VerticalAlignment="Center" Foreground="{ThemeResource PrimaryTextBrush}" />
+                                            <Button Grid.Column="2" Width="30" Height="30" Padding="0" Background="Transparent"
+                                                    BorderThickness="0" Click="RemoveWelcomeFolder_Click" Tag="{Binding}"
+                                                    ToolTipService.ToolTip="Remove folder">
+                                                <FontIcon Glyph="&#xE711;" FontSize="12" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Border>
+
+                <StackPanel x:Name="WelcomeProgress" Visibility="Collapsed" Spacing="8">
+                    <ProgressBar x:Name="WelcomeProgressBar" IsIndeterminate="True" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock x:Name="WelcomeProgressText" Foreground="{ThemeResource SecondaryTextBrush}" />
+                        <Button Grid.Column="1" Content="Cancel" Click="CancelScan_Click" Style="{StaticResource OutlineButtonStyle}" />
+                    </Grid>
+                </StackPanel>
+
+                <Grid ColumnDefinitions="*,1,*" ColumnSpacing="26" MaxWidth="720" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xEB9F;" FontSize="24" Foreground="{StaticResource ThanosBlue}" />
+                        <StackPanel>
+                            <TextBlock Text="JPG, PNG, WebP, HEIC, AVIF, TIFF, RAW and more" FontSize="12" Foreground="{ThemeResource PrimaryTextBrush}" />
+                            <TextBlock Text="Extended formats use the image codecs installed in Windows." FontSize="11" Foreground="{ThemeResource MutedTextBrush}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <Border Grid.Column="1" Width="1" Background="{ThemeResource StrokeBrush}" />
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12">
+                        <FontIcon Glyph="&#xE72E;" FontSize="24" Foreground="{StaticResource ThanosBlue}" />
+                        <StackPanel>
+                            <TextBlock Text="Scanning happens locally" FontSize="12" Foreground="{ThemeResource PrimaryTextBrush}" />
+                            <TextBlock Text="Your photos never leave your computer." FontSize="11" Foreground="{ThemeResource MutedTextBrush}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid x:Name="GroupsPanel" Visibility="Collapsed" Padding="20,16,20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="68" />
+            </Grid.RowDefinitions>
+
+            <Grid Margin="0,0,0,14" ColumnDefinitions="*,Auto">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Similar Photo Groups" Style="{StaticResource PageTitleStyle}" />
+                    <TextBlock x:Name="GroupSummary" Style="{StaticResource SecondaryTextStyle}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Review recommendations and select only the photos to delete" FontSize="12"
+                               Foreground="{ThemeResource SecondaryTextBrush}" VerticalAlignment="Center" />
+                    <Button Content="Scan History" Click="ShowSessionHistory_Click" Style="{StaticResource OutlineButtonStyle}" />
+                    <Button Content="New Scan" Click="StartNewSession_Click" Style="{StaticResource OutlineButtonStyle}" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="1.65*,0.9*" ColumnSpacing="14">
+                <ListView x:Name="GroupList" SelectionChanged="GroupList_SelectionChanged" SelectionMode="Single"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0,0,0,9" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="CornerRadius" Value="12" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PhotoGroupViewModel">
+                            <Border MinHeight="104" Background="{ThemeResource SurfaceBrush}" BorderBrush="{ThemeResource StrokeBrush}"
+                                    BorderThickness="1" CornerRadius="11" Padding="12">
+                                <Grid ColumnDefinitions="96,150,*,Auto" ColumnSpacing="14">
+                                    <Border Width="96" Height="78" CornerRadius="8" Background="{ThemeResource SubtleSurfaceBrush}">
+                                        <Image Source="{x:Bind Thumbnail, Mode=OneWay}" Stretch="UniformToFill" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
+                                        <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold" FontSize="15" Foreground="{ThemeResource PrimaryTextBrush}" />
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock Text="Recommended 1" Foreground="{StaticResource ThanosBlue}" FontSize="12" />
+                                            <TextBlock Text="•" Foreground="#A0AABB" FontSize="12" />
+                                            <TextBlock Text="Select duplicates" Foreground="{StaticResource ThanosRed}" FontSize="12" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <ItemsControl Grid.Column="2" ItemsSource="{x:Bind PreviewItems}" VerticalAlignment="Center">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:PhotoItemViewModel">
+                                                <Border Width="66" Height="56" Margin="0,0,7,0" CornerRadius="6"
+                                                        Background="{ThemeResource SubtleSurfaceBrush}" BorderBrush="{ThemeResource StrokeBrush}" BorderThickness="1">
+                                                    <Grid>
+                                                        <Image Source="{x:Bind Thumbnail, Mode=OneWay}" Stretch="UniformToFill" />
+                                                        <FontIcon Glyph="&#xEB90;" FontSize="17" Foreground="#718096"
+                                                                  Visibility="{x:Bind ThumbnailErrorVisibility}" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Button Grid.Column="3" Width="34" Height="34" Padding="0" Background="Transparent"
+                                            BorderThickness="0" VerticalAlignment="Center" Click="IgnoreGroup_Click"
+                                            Tag="{x:Bind}" ToolTipService.ToolTip="Ignore this group"
+                                            AutomationProperties.Name="Ignore this group">
+                                        <FontIcon Glyph="&#xE711;" FontSize="13" Foreground="{ThemeResource PrimaryTextBrush}" />
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Border Grid.Column="1" Style="{StaticResource PanelStyle}" Padding="16">
+                    <Grid RowDefinitions="Auto,310,Auto,*" RowSpacing="10">
+                        <StackPanel Spacing="2">
+                            <TextBlock x:Name="SelectedGroupTitle" Text="Select a group" FontSize="20"
+                                       FontWeight="Bold" Foreground="{ThemeResource PrimaryTextBrush}" />
+                            <TextBlock Text="Recommended from image quality; you still control every deletion." FontSize="12"
+                                       Foreground="{ThemeResource SecondaryTextBrush}" />
+                        </StackPanel>
+                        <Border Grid.Row="1" CornerRadius="9" Background="#111827"
+                                PointerPressed="PreviewImage_PointerPressed" ToolTipService.ToolTip="Double-click for fullscreen preview"
+                                AutomationProperties.Name="Selected photo preview">
+                            <Image x:Name="PreviewImage" Stretch="Uniform" />
+                        </Border>
+                        <TextBlock x:Name="PreviewPath" Grid.Row="2" TextTrimming="CharacterEllipsis"
+                                   FontWeight="SemiBold" Foreground="{ThemeResource PrimaryTextBrush}" />
+                        <GridView x:Name="PhotoGrid" Grid.Row="3" SelectionMode="Single"
+                                  SelectionChanged="PhotoGrid_SelectionChanged"
+                                  IsItemClickEnabled="False"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <GridView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsWrapGrid ItemWidth="104" ItemHeight="128" Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </GridView.ItemsPanel>
+                            <GridView.ItemContainerStyle>
+                                <Style TargetType="GridViewItem">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="0,0,7,7" />
+                                    <Setter Property="CornerRadius" Value="7" />
+                                </Style>
+                            </GridView.ItemContainerStyle>
+                            <GridView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:PhotoItemViewModel">
+                                    <Border Width="98" Height="122" CornerRadius="7"
+                                            BorderBrush="{ThemeResource StrokeBrush}" BorderThickness="1" Background="{ThemeResource SurfaceBrush}">
+                                        <Grid RowDefinitions="84,*">
+                                            <Image Source="{x:Bind Thumbnail, Mode=OneWay}" Stretch="UniformToFill"
+                                                   PointerPressed="Photo_PointerPressed" Tag="{x:Bind Path}"
+                                                   ToolTipService.ToolTip="Double-click for fullscreen preview" />
+                                            <FontIcon Glyph="&#xEB90;" FontSize="19" Foreground="#718096"
+                                                      Visibility="{x:Bind ThumbnailErrorVisibility}" />
+                                            <Border Width="28" Height="28" Background="White" BorderBrush="#111827"
+                                                    BorderThickness="2" CornerRadius="6" Padding="1"
+                                                    HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4">
+                                                <CheckBox IsChecked="{x:Bind Selection.IsSelected, Mode=TwoWay}"
+                                                          Width="22" Height="22" Padding="0" Margin="-2"
+                                                          Background="White" BorderBrush="#111827" BorderThickness="2"
+                                                          Foreground="White" AutomationProperties.Name="Select photo for deletion" />
+                                            </Border>
+                                            <Border Background="{StaticResource ThanosBlue}" CornerRadius="4" Padding="4,2"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4"
+                                                    Visibility="{x:Bind RecommendedVisibility}">
+                                                <TextBlock Text="Recommended" Foreground="White" FontSize="8" />
+                                            </Border>
+                                            <Grid Grid.Row="1" Margin="7,3">
+                                                <TextBlock Text="{x:Bind SimilarityText}" FontSize="11"
+                                                           Foreground="{ThemeResource SecondaryTextBrush}" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                        </GridView>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Border Grid.Row="2" Background="{ThemeResource SurfaceBrush}" BorderBrush="{ThemeResource StrokeBrush}" BorderThickness="0,1,0,0"
+                    Margin="-20,8,-20,0" Padding="20,9">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border Width="42" Height="42" CornerRadius="21" Background="#FFF0F1">
+                        <FontIcon Glyph="&#xE74D;" FontSize="19" Foreground="{StaticResource ThanosRed}" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="Delete selected photos" FontWeight="SemiBold" Foreground="{ThemeResource PrimaryTextBrush}" />
+                        <TextBlock x:Name="DeleteSelectionSummary" Text="No photos selected for deletion"
+                                   FontSize="11" Foreground="{ThemeResource SecondaryTextBrush}" />
+                    </StackPanel>
+                    <Button x:Name="DeleteSelectedButton" Grid.Column="2" Click="DeleteSelected_Click"
+                            Style="{StaticResource DangerButtonStyle}" IsEnabled="False">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE74D;" FontSize="15" />
+                            <TextBlock x:Name="DeleteButtonText" Text="Delete Selected Photos" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

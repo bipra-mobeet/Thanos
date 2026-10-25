@@ -1,0 +1,20 @@
+<Window
+    x:Class="Thanos.App.PhotoPreviewWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid x:Name="PreviewRoot" Background="#F6000000" IsTabStop="True" KeyDown="PreviewRoot_KeyDown">
+        <Image x:Name="FullScreenImage" Stretch="Uniform" Margin="28" />
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="18" Width="46" Height="46"
+                Padding="0" Background="#99000000" Foreground="White" BorderBrush="#66FFFFFF"
+                BorderThickness="1" CornerRadius="23" Click="Close_Click" ToolTipService.ToolTip="Close preview">
+            <FontIcon Glyph="&#xE711;" FontSize="18" />
+        </Button>
+        <Border VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="24" Padding="14,8"
+                Background="#B3000000" CornerRadius="8">
+            <StackPanel Orientation="Horizontal" Spacing="14">
+                <TextBlock x:Name="PhotoPathText" Foreground="White" MaxWidth="900" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Space or Esc to close" Foreground="#CCFFFFFF" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

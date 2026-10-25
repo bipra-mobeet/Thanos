@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/Thanos.Core/Thanos.Core.csproj" />
+  <Project Path="src/Thanos.Infrastructure/Thanos.Infrastructure.csproj" />
+  <Project Path="src/Thanos.App/Thanos.App.csproj" />
+  <Project Path="tests/Thanos.Core.Tests/Thanos.Core.Tests.csproj" />
+  <Project Path="tests/Thanos.Infrastructure.Tests/Thanos.Infrastructure.Tests.csproj" />
+</Solution>
